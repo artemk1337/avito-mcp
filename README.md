@@ -51,7 +51,7 @@ export AVITO_CLIENT_SECRET=...
 
 ## Ограничения
 
-Методы взяты из [копии OpenAPI каталога Avito](https://github.com/mkrvas/avito-business-api-reference/blob/master/references/avito-api-openapi.json). [Официальный каталог](https://developers.avito.ru/api-catalog) во время разработки отвечал HTTP 429. [OpenAPI 3.0](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.0.md) описывает формат документации. Реальные запросы к Avito без ключей проверить не удалось.
+Методы взяты из [копии OpenAPI каталога Avito](https://github.com/mkrvas/avito-business-api-reference/blob/master/references/avito-api-openapi.json). [OpenAPI 3.0](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.0.md) описывает формат документации. Реальные запросы к Avito без ключей проверить не удалось.
 
 Avito разрешает до 25 вызовов `list_items` в минуту. Метод не возвращает объявления сотрудников. Для доступа к чужому аккаунту нужна авторизация через OAuth с нужными правами; сервер принимает ключи своего аккаунта или готовый токен.
 
