@@ -76,8 +76,13 @@ func TestStaticTokenAndAPIError(t *testing.T) {
 }
 
 func TestMissingCredentials(t *testing.T) {
-	if _, err := NewClient(BaseURL, nil, Credentials{ClientID: "id"}); err == nil {
-		t.Fatal("expected missing credentials error")
+	client, err := NewClient(BaseURL, nil, Credentials{ClientID: "id"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = client.Do(context.Background(), http.MethodGet, "/core/v1/items", nil, nil)
+	if err == nil || !strings.Contains(err.Error(), "AVITO_CLIENT_SECRET") {
+		t.Fatalf("expected missing credentials error, got %v", err)
 	}
 }
 

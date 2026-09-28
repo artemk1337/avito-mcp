@@ -34,9 +34,6 @@ type Client struct {
 }
 
 func NewClient(baseURL string, httpClient *http.Client, creds Credentials) (*Client, error) {
-	if creds.AccessToken == "" && (creds.ClientID == "" || creds.ClientSecret == "") {
-		return nil, errors.New("set AVITO_ACCESS_TOKEN or both AVITO_CLIENT_ID and AVITO_CLIENT_SECRET")
-	}
 	parsed, err := url.Parse(baseURL)
 	if err != nil || parsed.Scheme == "" || parsed.Host == "" {
 		return nil, errors.New("invalid Avito API base URL")
@@ -78,6 +75,9 @@ func (c *Client) Do(ctx context.Context, method, path string, query url.Values, 
 func (c *Client) accessToken(ctx context.Context) (string, error) {
 	if c.creds.AccessToken != "" {
 		return c.creds.AccessToken, nil
+	}
+	if c.creds.ClientID == "" || c.creds.ClientSecret == "" {
+		return "", errors.New("set AVITO_ACCESS_TOKEN or both AVITO_CLIENT_ID and AVITO_CLIENT_SECRET")
 	}
 	c.mu.Lock()
 	defer c.mu.Unlock()
