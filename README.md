@@ -10,6 +10,7 @@
 go build -o avito-mcp ./cmd/avito-mcp
 export AVITO_CLIENT_ID=...
 export AVITO_CLIENT_SECRET=...
+export AVITO_PROFILE_ID=...
 ./avito-mcp
 ```
 
@@ -33,9 +34,21 @@ export AVITO_CLIENT_SECRET=...
 }
 ```
 
+`AVITO_PROFILE_ID` - ID аккаунта для аргумента `user_id` у инструментов чатов. Сервер не подставляет его автоматически; MCP-клиент передаёт значение при вызове инструмента. Для чтения переписки `get_profile` не требуется.
+
 ### Codex Desktop на macOS
 
-Приложение, открытое из Dock или Finder, может не получить переменные из `~/.zshrc`. Для него храните ключи в локальном файле `~/.config/avito-mcp/env` с правами `0600`:
+Если сам процесс Codex получает переменные окружения, передайте их серверу по именам через `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.avito]
+command = "/absolute/path/to/avito-mcp"
+env_vars = ["AVITO_CLIENT_ID", "AVITO_CLIENT_SECRET", "AVITO_PROFILE_ID"]
+```
+
+В `env_vars` записываются только имена, не значения. Codex, открытый из Dock или Finder, обычно не получает переменные из `~/.zshrc`. Проверьте окружение самого процесса Codex и переподключите MCP после изменения настройки. Наличие переменных в терминале само по себе не подтверждает, что их видит Codex Desktop.
+
+Если передать окружение процессу Codex нельзя, используйте локальный файл с правами `0600`:
 
 ```sh
 mkdir -p ~/.config/avito-mcp
@@ -43,6 +56,7 @@ chmod 700 ~/.config/avito-mcp
 cat > ~/.config/avito-mcp/env <<'EOF'
 AVITO_CLIENT_ID='your-client-id'
 AVITO_CLIENT_SECRET='your-client-secret'
+AVITO_PROFILE_ID='your-profile-id'
 EOF
 chmod 600 ~/.config/avito-mcp/env
 ```
@@ -55,7 +69,7 @@ command = "/absolute/path/to/avito-mcp/scripts/run-with-env-file.sh"
 args = ["/absolute/path/to/avito-mcp"]
 ```
 
-Скрипт экспортирует ключи только процессу MCP. Не добавляйте файл с ключами в Git. Если Codex уже запустил MCP-сервер без ключей, переподключите его после изменения конфигурации.
+Скрипт экспортирует переменные процессу MCP. Не добавляйте файл с ключами в Git. После изменения конфигурации переподключите MCP.
 
 ## Инструменты
 
@@ -71,7 +85,7 @@ args = ["/absolute/path/to/avito-mcp"]
 | `send_message` | Отправить текстовое сообщение |
 | `mark_chat_read` | Пометить чат прочитанным |
 
-Для инструментов с `user_id` сначала вызовите `get_profile`. Для создания объявлений Avito использует Автозагрузку.
+Для инструментов с `user_id` передайте `AVITO_PROFILE_ID` в аргумент вызова. `get_profile` доступен как отдельный инструмент, но для работы с чатами не обязателен. Для создания объявлений Авито использует Автозагрузку.
 
 ## Ограничения
 
